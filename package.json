@@ -117,5 +117,9 @@
     "jest-diff": "^27.4.6",
     "youch": "^3.1.0",
     "youch-terminal": "^2.1.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "tag": "next"
   }
 }
