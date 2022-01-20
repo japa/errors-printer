@@ -12,6 +12,7 @@ import { inspect } from 'util'
 import forTerminal from 'youch-terminal'
 import { diff as jestDiff } from 'jest-diff'
 import { logger, icons } from '@poppinss/cliui'
+import { EOL } from 'os'
 
 /**
  * Print test runner errors
@@ -51,12 +52,24 @@ export class ErrorsPrinter {
 
       if (!diff || diff.includes('Comparing two different types of values.')) {
         console.log(logger.colors.red(`  Assertion Error: ${error.message}`))
+        console.log(diff)
         console.log()
-        console.log(logger.colors.green('Expected'))
-        console.log(inspect(expected, { colors: true }))
+        console.log(`  ${logger.colors.green('Expected')}`)
+        console.log(
+          inspect(expected, { colors: true })
+            .split(EOL)
+            .map((line) => `  ${line}`)
+            .join(EOL)
+        )
 
-        console.log(logger.colors.green('Actual'))
-        console.log(inspect(actual, { colors: true }))
+        console.log()
+        console.log(`  ${logger.colors.red('Actual')}`)
+        console.log(
+          inspect(actual, { colors: true })
+            .split(EOL)
+            .map((line) => `  ${line}`)
+            .join(EOL)
+        )
       } else {
         console.log(logger.colors.red(`  Assertion Error: ${error.message}`))
         console.log()
