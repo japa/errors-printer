@@ -50,16 +50,20 @@ export class ErrorsPrinter {
       })
 
       if (!diff || diff.includes('Comparing two different types of values.')) {
-        console.log(logger.colors.red(`    Assertion Error: ${error.message}`))
+        console.log(logger.colors.red(`  Assertion Error: ${error.message}`))
+        console.log()
         console.log(logger.colors.green('Expected'))
         console.log(inspect(expected, { colors: true }))
 
         console.log(logger.colors.green('Actual'))
         console.log(inspect(actual, { colors: true }))
       } else {
+        console.log(logger.colors.red(`  Assertion Error: ${error.message}`))
+        console.log()
         console.log(diff)
       }
 
+      console.log()
       return
     }
 
