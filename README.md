@@ -89,6 +89,31 @@ await printer.printError(new Error('boom'))
 
 ![](assets/error-stack.png)
 
+### printErrors
+Print an array of errors produced by the Japa test runner summary. The method accepts the following arguments.
+
+- `label`: The error label to print. Usually, it will be test title or the group title.
+- `errors`: An array of errors in the following format.
+    ```ts
+    {
+      phase: string,
+      error: Error
+    }
+    ```
+
+```ts
+await printer.printErrors('test 1', [
+  {
+    phase: 'test',
+    error: new Error('test failed')
+  },
+  {
+    phase: 'teardown',
+    error: new Error('teardown failed')
+  }
+])
+```
+
 [github-actions-image]: https://img.shields.io/github/workflow/status/japa/errors-printer/test?style=for-the-badge
 
 [github-actions-url]: https://github.com/japa/errors-printer/actions/workflows/test.yml "github-actions"
