@@ -8,11 +8,11 @@
  */
 
 import Youch from 'youch'
+import { EOL } from 'os'
 import { inspect } from 'util'
 import forTerminal from 'youch-terminal'
 import { diff as jestDiff } from 'jest-diff'
 import { logger, icons } from '@poppinss/cliui'
-import { EOL } from 'os'
 
 /**
  * Print test runner errors
