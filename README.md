@@ -76,7 +76,24 @@ try {
 }
 ```
 
-![](assets/diff-error.png)
+![](assets/assertion-error.png)
+
+**Jest error**
+
+```ts
+import expect from 'expect'
+import { ErrorsPrinter } from '@japa/errors-printer'
+
+const printer = new ErrorsPrinter()
+
+try {
+  expect({ bar: 'baz' }).toEqual(expect.not.objectContaining({ bar: 'baz' }))
+} catch (error) {
+  await printer.printError(error)
+}
+```
+
+![](assets/jest-error.png)
 
 **Error stack**
 
