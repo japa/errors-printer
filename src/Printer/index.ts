@@ -9,7 +9,6 @@
 
 import Youch from 'youch'
 import { EOL } from 'os'
-import { inspect } from 'util'
 import forTerminal from 'youch-terminal'
 import { diff as jestDiff } from 'jest-diff'
 import { logger, icons } from '@poppinss/cliui'
@@ -35,55 +34,97 @@ export class ErrorsPrinter {
   }
 
   /**
+   * Displays the error stack for a given error
+   */
+  private async displayErrorStack(error: any) {
+    const jsonResponse = await new Youch(error, {}).toJSON()
+    console.log(
+      forTerminal(jsonResponse, {
+        prefix: '  ',
+        hideErrorTitle: true,
+        displayMainFrameOnly: true,
+      })
+    )
+  }
+
+  /**
+   * Display chai assertion error
+   */
+  private async displayAssertionError(error: any) {
+    const { actual, expected } = error
+    const diff = jestDiff(expected, actual, {
+      expand: true,
+      includeChangeCounts: true,
+      compareKeys: () => 0, // Preserves keys order
+    })
+
+    /**
+     * Display diff
+     */
+    console.log()
+    console.log(`  Assertion Error: ${error.message}`)
+    console.log()
+    console.log(diff)
+
+    /**
+     * Display error stack with the main frame only
+     */
+    const jsonResponse = await new Youch(error, {}).toJSON()
+    console.log(
+      forTerminal(jsonResponse, {
+        prefix: '  ',
+        hideErrorTitle: true,
+        hideMessage: true,
+        displayMainFrameOnly: true,
+      })
+    )
+  }
+
+  /**
+   * Display jest assertion error
+   */
+  private async displayJestError(error: any) {
+    /**
+     * Display diff
+     */
+    console.log()
+    console.log(
+      `  Assertion Error:${error.message
+        .split(EOL)
+        .map((line: string) => `  ${line}`)
+        .join(EOL)}`
+    )
+    console.log()
+
+    /**
+     * Display error stack with the main frame only
+     */
+    const jsonResponse = await new Youch(error, {}).toJSON()
+    console.log(
+      forTerminal(jsonResponse, {
+        prefix: '  ',
+        hideErrorTitle: true,
+        hideMessage: true,
+        displayMainFrameOnly: true,
+      })
+    )
+  }
+
+  /**
    * Pretty print the error to the console
    */
   public async printError(error: any) {
-    const { actual, expected } = error
-
-    /**
-     * Assertion error
-     */
-    if (actual && expected) {
-      console.log()
-
-      const diff = jestDiff(expected, actual, {
-        expand: true,
-        includeChangeCounts: true,
-        compareKeys: () => 0, // Preserves keys order
-      })
-
-      if (!diff || diff.includes('Comparing two different types of values.')) {
-        console.log(`  Assertion Error: ${error.message}`)
-        console.log(diff)
-        console.log()
-        console.log(`  ${logger.colors.green('Expected')}`)
-        console.log(
-          inspect(expected, { colors: true })
-            .split(EOL)
-            .map((line) => `  ${line}`)
-            .join(EOL)
-        )
-
-        console.log()
-        console.log(`  ${logger.colors.red('Actual')}`)
-        console.log(
-          inspect(actual, { colors: true })
-            .split(EOL)
-            .map((line) => `  ${line}`)
-            .join(EOL)
-        )
-      } else {
-        console.log(`  Assertion Error: ${error.message}`)
-        console.log()
-        console.log(diff)
-      }
-
-      console.log()
+    if ('actual' in error && 'expected' in error) {
+      await this.displayAssertionError(error)
       return
     }
 
-    const jsonResponse = await new Youch(error, {}).toJSON()
-    console.log(forTerminal(jsonResponse, { prefix: '  ', hideErrorTitle: true }))
+    if ('matcherResult' in error) {
+      await this.displayJestError(error)
+      return
+    }
+
+    await this.displayErrorStack(error)
   }
 
   /**

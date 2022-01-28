@@ -1,3 +1,4 @@
+import expect from 'expect'
 import { Assert } from '@japa/assert'
 import { ErrorsPrinter } from '../index'
 
@@ -15,4 +16,12 @@ async function printDiff() {
   }
 }
 
-printStack().then(printDiff)
+async function printJestDiff() {
+  try {
+    expect({ bar: 'baz' }).toEqual(expect.not.objectContaining({ bar: 'baz' }))
+  } catch (error) {
+    await printer.printError(error)
+  }
+}
+
+printStack().then(printDiff).then(printJestDiff)
