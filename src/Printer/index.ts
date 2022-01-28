@@ -50,6 +50,7 @@ export class ErrorsPrinter {
         compareKeys: () => 0, // Preserves keys order
       })
 
+      console.log()
       if (!diff || diff.includes('Comparing two different types of values.')) {
         console.log(logger.colors.red(`  Assertion Error: ${error.message}`))
         console.log(diff)
@@ -76,7 +77,6 @@ export class ErrorsPrinter {
         console.log(diff)
       }
 
-      console.log()
       return
     }
 
