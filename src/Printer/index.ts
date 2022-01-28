@@ -44,15 +44,16 @@ export class ErrorsPrinter {
      * Assertion error
      */
     if (actual && expected) {
+      console.log()
+
       const diff = jestDiff(expected, actual, {
         expand: true,
         includeChangeCounts: true,
         compareKeys: () => 0, // Preserves keys order
       })
 
-      console.log()
       if (!diff || diff.includes('Comparing two different types of values.')) {
-        console.log(logger.colors.red(`  Assertion Error: ${error.message}`))
+        console.log(`  Assertion Error: ${error.message}`)
         console.log(diff)
         console.log()
         console.log(`  ${logger.colors.green('Expected')}`)
@@ -72,17 +73,17 @@ export class ErrorsPrinter {
             .join(EOL)
         )
       } else {
-        console.log(logger.colors.red(`  Assertion Error: ${error.message}`))
+        console.log(`  Assertion Error: ${error.message}`)
         console.log()
         console.log(diff)
       }
 
+      console.log()
       return
     }
 
     const jsonResponse = await new Youch(error, {}).toJSON()
     console.log(forTerminal(jsonResponse, { prefix: '  ', hideErrorTitle: true }))
-    console.log()
   }
 
   /**
@@ -96,6 +97,7 @@ export class ErrorsPrinter {
       }
 
       await this.printError(error)
+      console.log()
     }
   }
 }
