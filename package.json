@@ -36,7 +36,7 @@
   "devDependencies": {
     "@adonisjs/mrm-preset": "^5.0.2",
     "@adonisjs/require-ts": "^2.0.9",
-    "@japa/assert": "^1.1.0",
+    "@japa/assert": "^1.1.1",
     "@types/node": "^17.0.13",
     "commitizen": "^4.2.4",
     "cz-conventional-changelog": "^3.3.0",
@@ -118,7 +118,7 @@
     "@poppinss/cliui": "^3.0.0",
     "jest-diff": "^27.4.6",
     "youch": "^3.1.0",
-    "youch-terminal": "^2.1.1"
+    "youch-terminal": "^2.1.2"
   },
   "publishConfig": {
     "access": "public",
