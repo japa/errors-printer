@@ -7,8 +7,8 @@
  * file that was distributed with this source code.
  */
 
-import Youch from 'youch'
 import { EOL } from 'os'
+import Youch from 'youch'
 import forTerminal from 'youch-terminal'
 import { diff as jestDiff } from 'jest-diff'
 import { logger, icons } from '@poppinss/cliui'
@@ -42,6 +42,7 @@ export class ErrorsPrinter {
       forTerminal(jsonResponse, {
         prefix: '  ',
         hideErrorTitle: true,
+        displayShortPath: true,
         displayMainFrameOnly: true,
       })
     )
@@ -75,6 +76,7 @@ export class ErrorsPrinter {
         prefix: '  ',
         hideErrorTitle: true,
         hideMessage: true,
+        displayShortPath: true,
         displayMainFrameOnly: true,
       })
     )
@@ -105,6 +107,7 @@ export class ErrorsPrinter {
         prefix: '  ',
         hideErrorTitle: true,
         hideMessage: true,
+        displayShortPath: true,
         displayMainFrameOnly: true,
       })
     )
