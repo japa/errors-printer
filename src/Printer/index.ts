@@ -52,20 +52,22 @@ export class ErrorsPrinter {
    * Display chai assertion error
    */
   private async displayAssertionError(error: any) {
-    const { actual, expected } = error
-    const diff = jestDiff(expected, actual, {
-      expand: true,
-      includeChangeCounts: true,
-      compareKeys: () => 0, // Preserves keys order
-    })
-
     /**
      * Display diff
      */
     console.log()
     console.log(`  Assertion Error: ${error.message}`)
     console.log()
-    console.log(diff)
+
+    if (error.showDiff) {
+      const { actual, expected } = error
+      const diff = jestDiff(expected, actual, {
+        expand: true,
+        includeChangeCounts: true,
+        compareKeys: () => 0, // Preserves keys order
+      })
+      console.log(diff)
+    }
 
     /**
      * Display error stack with the main frame only
