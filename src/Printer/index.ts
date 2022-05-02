@@ -20,7 +20,7 @@ export class ErrorsPrinter {
   private stackLinesCount: number
 
   constructor(options?: { stackLinesCount?: number }) {
-    this.stackLinesCount = options?.stackLinesCount || 2
+    this.stackLinesCount = options?.stackLinesCount || 5
   }
 
   /**
