@@ -27,8 +27,14 @@ export class ErrorsPrinter {
    * Get Youch's JSON report of the given error
    */
   private async getYouchJson(error: any) {
-    const youch = new Youch(error, {})
-    youch.codeContext = this.stackLinesCount
+    const youch = new Youch(
+      error,
+      {},
+      {
+        postLines: this.stackLinesCount,
+        preLines: this.stackLinesCount,
+      }
+    )
     return youch.toJSON()
   }
 
