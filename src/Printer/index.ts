@@ -140,6 +140,14 @@ export class ErrorsPrinter {
    * Pretty print the error to the console
    */
   public async printError(error: any) {
+    /**
+     * Values are not object objects are printed as it is.
+     */
+    if (error === null || Array.isArray(error) || typeof error !== 'object') {
+      console.log(`Error: ${error}`)
+      return
+    }
+
     if ('actual' in error && 'expected' in error) {
       await this.displayAssertionError(error)
       return

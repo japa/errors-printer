@@ -24,4 +24,12 @@ async function printJestDiff() {
   }
 }
 
-printStack().then(printDiff).then(printJestDiff)
+async function printErrors() {
+  await printer.printError('boom')
+  await printer.printError(['boom'])
+  await printer.printError(null)
+  await printer.printError(undefined)
+  await printer.printError('{message: boom}')
+}
+
+printStack().then(printDiff).then(printJestDiff).then(printErrors)
