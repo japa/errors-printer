@@ -17,6 +17,27 @@ import { logger, icons } from '@poppinss/cliui'
  * Print test runner errors
  */
 export class ErrorsPrinter {
+  private stackLinesCount: number
+
+  constructor(options?: { stackLinesCount?: number }) {
+    this.stackLinesCount = options?.stackLinesCount || 5
+  }
+
+  /**
+   * Get Youch's JSON report of the given error
+   */
+  private async getYouchJson(error: any) {
+    const youch = new Youch(
+      error,
+      {},
+      {
+        postLines: this.stackLinesCount,
+        preLines: this.stackLinesCount,
+      }
+    )
+    return youch.toJSON()
+  }
+
   /**
    * Returns human readable message for error phase
    */
@@ -37,7 +58,7 @@ export class ErrorsPrinter {
    * Displays the error stack for a given error
    */
   private async displayErrorStack(error: any) {
-    const jsonResponse = await new Youch(error, {}).toJSON()
+    const jsonResponse = await this.getYouchJson(error)
     console.log(
       forTerminal(jsonResponse, {
         prefix: '  ',
@@ -72,7 +93,7 @@ export class ErrorsPrinter {
     /**
      * Display error stack with the main frame only
      */
-    const jsonResponse = await new Youch(error, {}).toJSON()
+    const jsonResponse = await this.getYouchJson(error)
     console.log(
       forTerminal(jsonResponse, {
         prefix: '  ',
@@ -103,7 +124,7 @@ export class ErrorsPrinter {
     /**
      * Display error stack with the main frame only
      */
-    const jsonResponse = await new Youch(error, {}).toJSON()
+    const jsonResponse = await this.getYouchJson(error)
     console.log(
       forTerminal(jsonResponse, {
         prefix: '  ',
