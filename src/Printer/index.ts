@@ -85,7 +85,6 @@ export class ErrorsPrinter {
       const diff = jestDiff(expected, actual, {
         expand: true,
         includeChangeCounts: true,
-        compareKeys: () => 0, // Preserves keys order
       })
       console.log(diff)
     }
