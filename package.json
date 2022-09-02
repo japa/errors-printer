@@ -117,8 +117,8 @@
   "dependencies": {
     "@poppinss/cliui": "^3.0.2",
     "jest-diff": "^29.0.1",
-    "youch": "^3.2.0",
-    "youch-terminal": "^2.1.4"
+    "youch": "^3.2.1",
+    "youch-terminal": "^2.1.5"
   },
   "publishConfig": {
     "access": "public",
