@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import { EOL } from 'node:os'
+import { EOL } from 'os'
 import Youch from 'youch'
 import forTerminal from 'youch-terminal'
 import { diff as jestDiff } from 'jest-diff'
