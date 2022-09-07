@@ -76,6 +76,7 @@
       "prettier"
     ],
     "rules": {
+      "unicorn/prefer-node-protocol": "off",
       "prettier/prettier": [
         "error",
         {
