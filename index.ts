@@ -7,4 +7,4 @@
  * file that was distributed with this source code.
  */
 
-export { ErrorsPrinter } from './src/Printer'
+export { ErrorsPrinter } from './src/printer'

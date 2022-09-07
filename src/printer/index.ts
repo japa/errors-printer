@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import { EOL } from 'os'
+import { EOL } from 'node:os'
 import Youch from 'youch'
 import forTerminal from 'youch-terminal'
 import { diff as jestDiff } from 'jest-diff'
@@ -138,7 +138,7 @@ export class ErrorsPrinter {
   /**
    * Pretty print the error to the console
    */
-  public async printError(error: any) {
+  async printError(error: any) {
     /**
      * Values are not object objects are printed as it is.
      */
@@ -163,7 +163,7 @@ export class ErrorsPrinter {
   /**
    * Print summary errors
    */
-  public async printErrors(label: string, errors: { phase: string; error: any }[]) {
+  async printErrors(label: string, errors: { phase: string; error: any }[]) {
     for (let { phase, error } of errors) {
       console.log(logger.colors.red(`${icons.cross} ${label}`))
       if (phase !== 'test') {
