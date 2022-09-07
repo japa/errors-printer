@@ -15,7 +15,7 @@
     "mrm": "mrm --preset=@adonisjs/mrm-preset",
     "pretest": "npm run lint",
     "test": "node .bin/test.js",
-    "clean": "del build",
+    "clean": "del-cli build",
     "compile": "npm run lint && npm run clean && tsc",
     "build": "npm run compile",
     "prepublishOnly": "npm run build",
@@ -117,7 +117,7 @@
   "dependencies": {
     "@poppinss/cliui": "^3.0.2",
     "jest-diff": "^29.0.2",
-    "youch": "^3.2.1",
+    "youch": "^3.2.2",
     "youch-terminal": "^2.1.5"
   },
   "publishConfig": {
