@@ -1,7 +1,7 @@
 /*
  * @japa/errors-printer
  *
- * (c) Harminder Virk <virk@adonisjs.com>
+ * (c) Japa.dev
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -18,9 +18,11 @@ import { logger, icons } from '@poppinss/cliui'
  */
 export class ErrorsPrinter {
   private stackLinesCount: number
+  private framesMaxLimit: number
 
-  constructor(options?: { stackLinesCount?: number }) {
+  constructor(options?: { stackLinesCount?: number; framesMaxLimit?: number }) {
     this.stackLinesCount = options?.stackLinesCount || 5
+    this.framesMaxLimit = options?.framesMaxLimit || 3
   }
 
   /**
@@ -61,10 +63,9 @@ export class ErrorsPrinter {
     const jsonResponse = await this.getYouchJson(error)
     console.log(
       forTerminal(jsonResponse, {
-        prefix: '  ',
-        hideErrorTitle: true,
         displayShortPath: true,
-        displayMainFrameOnly: true,
+        framesMaxLimit: this.framesMaxLimit,
+        displayMainFrameOnly: false,
       })
     )
   }
@@ -95,7 +96,6 @@ export class ErrorsPrinter {
     const jsonResponse = await this.getYouchJson(error)
     console.log(
       forTerminal(jsonResponse, {
-        prefix: '  ',
         hideErrorTitle: true,
         hideMessage: true,
         displayShortPath: true,
@@ -126,7 +126,6 @@ export class ErrorsPrinter {
     const jsonResponse = await this.getYouchJson(error)
     console.log(
       forTerminal(jsonResponse, {
-        prefix: '  ',
         hideErrorTitle: true,
         hideMessage: true,
         displayShortPath: true,

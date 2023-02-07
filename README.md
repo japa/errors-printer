@@ -131,7 +131,7 @@ await printer.printErrors('test 1', [
 ])
 ```
 
-[github-actions-image]: https://img.shields.io/github/workflow/status/japa/errors-printer/test?style=for-the-badge
+[github-actions-image]: https://img.shields.io/github/actions/workflow/status/japa/errors-printer/test.yml?style=for-the-badge
 
 [github-actions-url]: https://github.com/japa/errors-printer/actions/workflows/test.yml "github-actions"
 
