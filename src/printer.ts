@@ -1,40 +1,43 @@
 /*
  * @japa/errors-printer
  *
- * (c) Japa.dev
+ * (c) Japa
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-import { EOL } from 'os'
 import Youch from 'youch'
-import forTerminal from 'youch-terminal'
+import { EOL } from 'node:os'
+import { cliui } from '@poppinss/cliui'
 import { diff as jestDiff } from 'jest-diff'
-import { logger, icons } from '@poppinss/cliui'
+// @ts-ignore
+import forTerminal from 'youch-terminal'
+
+const { colors, icons } = cliui()
 
 /**
  * Print test runner errors
  */
 export class ErrorsPrinter {
-  private stackLinesCount: number
-  private framesMaxLimit: number
+  #stackLinesCount: number
+  #framesMaxLimit: number
 
   constructor(options?: { stackLinesCount?: number; framesMaxLimit?: number }) {
-    this.stackLinesCount = options?.stackLinesCount || 5
-    this.framesMaxLimit = options?.framesMaxLimit || 3
+    this.#stackLinesCount = options?.stackLinesCount || 5
+    this.#framesMaxLimit = options?.framesMaxLimit || 3
   }
 
   /**
    * Get Youch's JSON report of the given error
    */
-  private async getYouchJson(error: any) {
+  async #getYouchJson(error: any) {
     const youch = new Youch(
       error,
       {},
       {
-        postLines: this.stackLinesCount,
-        preLines: this.stackLinesCount,
+        postLines: this.#stackLinesCount,
+        preLines: this.#stackLinesCount,
       }
     )
     return youch.toJSON()
@@ -43,7 +46,7 @@ export class ErrorsPrinter {
   /**
    * Returns human readable message for error phase
    */
-  private getPhaseTitle(phase: string) {
+  #getPhaseTitle(phase: string) {
     switch (phase) {
       case 'setup':
         return 'Setup hook'
@@ -59,12 +62,12 @@ export class ErrorsPrinter {
   /**
    * Displays the error stack for a given error
    */
-  private async displayErrorStack(error: any) {
-    const jsonResponse = await this.getYouchJson(error)
+  async #displayErrorStack(error: any) {
+    const jsonResponse = await this.#getYouchJson(error)
     console.log(
       forTerminal(jsonResponse, {
         displayShortPath: true,
-        framesMaxLimit: this.framesMaxLimit,
+        framesMaxLimit: this.#framesMaxLimit,
         displayMainFrameOnly: false,
       })
     )
@@ -73,7 +76,7 @@ export class ErrorsPrinter {
   /**
    * Display chai assertion error
    */
-  private async displayAssertionError(error: any) {
+  async #displayAssertionError(error: any) {
     /**
      * Display diff
      */
@@ -81,7 +84,7 @@ export class ErrorsPrinter {
     console.log(`  Assertion Error: ${error.message}`)
     console.log()
 
-    if (error.showDiff) {
+    if (('showDiff' in error && error.showDiff) || ('actual' in error && 'expected' in error)) {
       const { actual, expected } = error
       const diff = jestDiff(expected, actual, {
         expand: true,
@@ -93,7 +96,7 @@ export class ErrorsPrinter {
     /**
      * Display error stack with the main frame only
      */
-    const jsonResponse = await this.getYouchJson(error)
+    const jsonResponse = await this.#getYouchJson(error)
     console.log(
       forTerminal(jsonResponse, {
         hideErrorTitle: true,
@@ -107,7 +110,7 @@ export class ErrorsPrinter {
   /**
    * Display jest assertion error
    */
-  private async displayJestError(error: any) {
+  async #displayJestError(error: any) {
     /**
      * Display diff
      */
@@ -123,7 +126,7 @@ export class ErrorsPrinter {
     /**
      * Display error stack with the main frame only
      */
-    const jsonResponse = await this.getYouchJson(error)
+    const jsonResponse = await this.#getYouchJson(error)
     console.log(
       forTerminal(jsonResponse, {
         hideErrorTitle: true,
@@ -147,16 +150,16 @@ export class ErrorsPrinter {
     }
 
     if ('actual' in error && 'expected' in error) {
-      await this.displayAssertionError(error)
+      await this.#displayAssertionError(error)
       return
     }
 
     if ('matcherResult' in error) {
-      await this.displayJestError(error)
+      await this.#displayJestError(error)
       return
     }
 
-    await this.displayErrorStack(error)
+    await this.#displayErrorStack(error)
   }
 
   /**
@@ -164,9 +167,9 @@ export class ErrorsPrinter {
    */
   async printErrors(label: string, errors: { phase: string; error: any }[]) {
     for (let { phase, error } of errors) {
-      console.log(logger.colors.red(`${icons.cross} ${label}`))
+      console.log(colors.red(`${icons.cross} ${label}`))
       if (phase !== 'test') {
-        console.log(`  ${logger.colors.red(`(${this.getPhaseTitle(phase)})`)}`)
+        console.log(`  ${colors.red(`(${this.#getPhaseTitle(phase)})`)}`)
       }
 
       await this.printError(error)
