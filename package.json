@@ -63,7 +63,7 @@
   },
   "homepage": "https://github.com/japa/errors-printer#readme",
   "dependencies": {
-    "@poppinss/cliui": "^6.1.1-2",
+    "@poppinss/colors": "^4.1.0-2",
     "jest-diff": "^29.5.0",
     "youch": "^3.2.3",
     "youch-terminal": "^2.2.0"

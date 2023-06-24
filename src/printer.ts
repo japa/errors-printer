@@ -7,25 +7,28 @@
  * file that was distributed with this source code.
  */
 
-import Youch from 'youch'
-import { EOL } from 'node:os'
-import { cliui } from '@poppinss/cliui'
-import { diff as jestDiff } from 'jest-diff'
-// @ts-ignore
+// @ts-ignore-error
 import forTerminal from 'youch-terminal'
 
-const { colors, icons } = cliui()
+import Youch from 'youch'
+import { EOL } from 'node:os'
+import colors from '@poppinss/colors'
+import { diff as jestDiff } from 'jest-diff'
+
+const ansi = colors.ansi()
+const { columns } = process.stdout
 
 /**
- * Print test runner errors
+ * Pretty prints the test runner errors
  */
 export class ErrorsPrinter {
-  #stackLinesCount: number
-  #framesMaxLimit: number
+  #options: {
+    stackLinesCount: number
+    framesMaxLimit: number
+  }
 
   constructor(options?: { stackLinesCount?: number; framesMaxLimit?: number }) {
-    this.#stackLinesCount = options?.stackLinesCount || 5
-    this.#framesMaxLimit = options?.framesMaxLimit || 3
+    this.#options = { stackLinesCount: 5, framesMaxLimit: 3, ...options }
   }
 
   /**
@@ -36,8 +39,8 @@ export class ErrorsPrinter {
       error,
       {},
       {
-        postLines: this.#stackLinesCount,
-        preLines: this.#stackLinesCount,
+        postLines: this.#options.stackLinesCount,
+        preLines: this.#options.stackLinesCount,
       }
     )
     return youch.toJSON()
@@ -65,12 +68,13 @@ export class ErrorsPrinter {
   async #displayErrorStack(error: any) {
     const jsonResponse = await this.#getYouchJson(error)
     console.log(
-      forTerminal(jsonResponse, {
+      `  ${forTerminal(jsonResponse, {
         displayShortPath: true,
-        framesMaxLimit: this.#framesMaxLimit,
+        framesMaxLimit: this.#options.framesMaxLimit,
         displayMainFrameOnly: false,
-      })
+      }).trim()}`
     )
+    console.log()
   }
 
   /**
@@ -80,11 +84,10 @@ export class ErrorsPrinter {
     /**
      * Display diff
      */
-    console.log()
     console.log(`  Assertion Error: ${error.message}`)
     console.log()
 
-    if (('showDiff' in error && error.showDiff) || ('actual' in error && 'expected' in error)) {
+    if (!('showDiff' in error) || error.showDiff) {
       const { actual, expected } = error
       const diff = jestDiff(expected, actual, {
         expand: true,
@@ -114,14 +117,12 @@ export class ErrorsPrinter {
     /**
      * Display diff
      */
-    console.log()
     console.log(
       `  Assertion Error:${error.message
         .split(EOL)
         .map((line: string) => `  ${line}`)
         .join(EOL)}`
     )
-    console.log()
 
     /**
      * Display error stack with the main frame only
@@ -135,6 +136,14 @@ export class ErrorsPrinter {
         displayMainFrameOnly: true,
       })
     )
+  }
+
+  /**
+   * Prints a section with heading and borders around it
+   */
+  printSectionBorder(paging: string) {
+    const border = '─'.repeat(columns - (paging.length + 1))
+    console.log(ansi.red(`${border}${paging}─`))
   }
 
   /**
@@ -165,15 +174,17 @@ export class ErrorsPrinter {
   /**
    * Print summary errors
    */
-  async printErrors(label: string, errors: { phase: string; error: any }[]) {
-    for (let { phase, error } of errors) {
-      console.log(colors.red(`${icons.cross} ${label}`))
-      if (phase !== 'test') {
-        console.log(`  ${colors.red(`(${this.#getPhaseTitle(phase)})`)}`)
-      }
+  async printErrors(errors: { title: string; phase: string; error: any }[]) {
+    const errorsCount = errors.length
+    let index = 0
 
+    for (let { phase, error, title } of errors) {
+      this.printSectionBorder(`[${++index}/${errorsCount}]`)
+      console.log(`  ${phase === 'test' ? title : `${title}: ${this.#getPhaseTitle(phase)}`}`)
+      this.printSectionBorder('')
       await this.printError(error)
-      console.log()
     }
+
+    this.printSectionBorder('[End]')
   }
 }
