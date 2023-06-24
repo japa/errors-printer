@@ -1,7 +1,11 @@
-name: lint
+name: checks
 on:
   - push
   - pull_request
+
 jobs:
   lint:
     uses: japa/.github/.github/workflows/lint.yml@main
+
+  typecheck:
+    uses: japa/.github/.github/workflows/typecheck.yml@main
