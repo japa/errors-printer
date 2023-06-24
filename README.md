@@ -34,25 +34,33 @@ const printer = new ErrorsPrinter()
 
 // assuming you have the runner instance
 const summary = runner.getSummary()
+const errorsList = []
 
-/**
- * Printing all the errors inside the failure tree
- */
-for (let suite in summary.failureTree) {
-  await printer.printErrors(suite.name, suite.errors)
+summary.failureTree.forEach((suite) => {
+  suite.errors.forEach((error) => {
+    errorsList.push({ title: suite.name, ...error })
+  })
 
-  for (let groupOrTest in suite.children) {
+  suite.children.forEach((groupOrTest) => {
     if (groupOrTest.type === 'test') {
-      await printer.printErrors(groupOrTest.title, groupOrTest.errors)
-    } else {
-      await printer.printErrors(groupOrTest.title, groupOrTest.errors)
-
-      for (let group in groupOrTest.children) {
-        await printer.printErrors(group.title, group.errors)
-      }
+      groupOrTest.errors.forEach((error) => {
+        errorsList.push({ title: groupOrTest.title, ...error })
+      })
+      return
     }
-  }
-}
+
+    groupOrTest.errors.forEach((error) => {
+      errorsList.push({ title: groupOrTest.name, ...error })
+    })
+    groupOrTest.children.forEach((test) => {
+      test.errors.forEach((error) => {
+        errorsList.push({ title: test.title, ...error })
+      })
+    })
+  })
+})
+
+await printer.printErrors(errorsList)
 ```
 
 ## API
@@ -107,25 +115,26 @@ await printer.printError(new Error('boom'))
 ![](assets/error-stack.png)
 
 ### printErrors
-Print an array of errors produced by the Japa test runner summary. The method accepts the following arguments.
-
-- `label`: The error label to print. Usually, it will be test title or the group title.
-- `errors`: An array of errors in the following format.
-    ```ts
-    {
-      phase: string,
-      error: Error
-    }
-    ```
+Print an array of errors produced by the Japa test runner summary. The method accepts an array of errors in the following format.
 
 ```ts
-await printer.printErrors('test 1', [
+type Error = {
+  title: string,
+  phase: string,
+  error: Error
+}
+```
+
+```ts
+await printer.printErrors([
   {
     phase: 'test',
+    title: '2 + 2 = 4'
     error: new Error('test failed')
   },
   {
     phase: 'teardown',
+    title: '2 + 2 = 4'
     error: new Error('teardown failed')
   }
 ])
