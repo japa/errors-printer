@@ -66,7 +66,7 @@
     "@poppinss/colors": "^4.1.0-2",
     "jest-diff": "^29.5.0",
     "youch": "^3.2.3",
-    "youch-terminal": "^2.2.0"
+    "youch-terminal": "^2.2.1"
   },
   "publishConfig": {
     "access": "public",
