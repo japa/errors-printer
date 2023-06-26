@@ -68,13 +68,12 @@ export class ErrorsPrinter {
   async #displayErrorStack(error: any) {
     const jsonResponse = await this.#getYouchJson(error)
     console.log(
-      `  ${forTerminal(jsonResponse, {
+      forTerminal(jsonResponse, {
         displayShortPath: true,
         framesMaxLimit: this.#options.framesMaxLimit,
         displayMainFrameOnly: false,
-      }).trim()}`
+      })
     )
-    console.log()
   }
 
   /**
@@ -84,6 +83,7 @@ export class ErrorsPrinter {
     /**
      * Display diff
      */
+    console.log()
     console.log(`  Assertion Error: ${error.message}`)
     console.log()
 
@@ -117,6 +117,7 @@ export class ErrorsPrinter {
     /**
      * Display diff
      */
+    console.log()
     console.log(
       `  Assertion Error:${error.message
         .split(EOL)
@@ -180,8 +181,11 @@ export class ErrorsPrinter {
 
     for (let { phase, error, title } of errors) {
       this.printSectionBorder(`[${++index}/${errorsCount}]`)
-      console.log(`  ${phase === 'test' ? title : `${title}: ${this.#getPhaseTitle(phase)}`}`)
-      this.printSectionBorder('')
+      console.log(
+        `  ${ansi.bgRed().black(' ERROR ')} ${
+          phase === 'test' ? title : `${title}: ${this.#getPhaseTitle(phase)}`
+        }`
+      )
       await this.printError(error)
     }
 
