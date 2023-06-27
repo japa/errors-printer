@@ -72,7 +72,7 @@ export class ErrorsPrinter {
         displayShortPath: true,
         framesMaxLimit: this.#options.framesMaxLimit,
         displayMainFrameOnly: false,
-      })
+      }).trimEnd()
     )
   }
 
@@ -106,7 +106,7 @@ export class ErrorsPrinter {
         hideMessage: true,
         displayShortPath: true,
         displayMainFrameOnly: true,
-      })
+      }).trimEnd()
     )
   }
 
@@ -135,7 +135,7 @@ export class ErrorsPrinter {
         hideMessage: true,
         displayShortPath: true,
         displayMainFrameOnly: true,
-      })
+      }).trimEnd()
     )
   }
 
@@ -145,6 +145,21 @@ export class ErrorsPrinter {
   printSectionBorder(paging: string) {
     const border = '─'.repeat(columns - (paging.length + 1))
     console.log(ansi.red(`${border}${paging}─`))
+  }
+
+  /**
+   * Prints section header with a centered title and
+   * borders around it
+   */
+  printSectionHeader(title: string) {
+    const whitspacesWidth = (columns - (title.length + 1)) / 2
+    const [lhsWidth, rhsWidth] = Number.isInteger(whitspacesWidth)
+      ? [whitspacesWidth, whitspacesWidth]
+      : [whitspacesWidth - 1, whitspacesWidth + 1]
+
+    const borderLeft = ansi.red('─'.repeat(lhsWidth))
+    const borderRight = ansi.red('─'.repeat(rhsWidth))
+    console.log(`${borderLeft}${ansi.bgRed().black(` ${title} `)}${borderRight}`)
   }
 
   /**
@@ -180,15 +195,14 @@ export class ErrorsPrinter {
     let index = 0
 
     for (let { phase, error, title } of errors) {
-      this.printSectionBorder(`[${++index}/${errorsCount}]`)
+      console.log()
       console.log(
         `  ${ansi.bgRed().black(' ERROR ')} ${
           phase === 'test' ? title : `${title}: ${this.#getPhaseTitle(phase)}`
         }`
       )
       await this.printError(error)
+      this.printSectionBorder(`[${++index}/${errorsCount}]`)
     }
-
-    this.printSectionBorder('[End]')
   }
 }
