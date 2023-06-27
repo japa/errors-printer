@@ -1,6 +1,6 @@
 {
   "name": "@japa/errors-printer",
-  "version": "3.0.0-2",
+  "version": "3.0.0-3",
   "description": "Reusable package to pretty print test runner summary errors",
   "main": "build/index.js",
   "type": "module",
