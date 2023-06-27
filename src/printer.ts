@@ -18,6 +18,8 @@ import { diff as jestDiff } from 'jest-diff'
 const ansi = colors.ansi()
 const { columns } = process.stdout
 
+const pointer = process.platform === 'win32' && !process.env.WT_SESSION ? '>' : '❯'
+
 /**
  * Pretty prints the test runner errors
  */
@@ -152,12 +154,12 @@ export class ErrorsPrinter {
    * borders around it
    */
   printSectionHeader(title: string) {
-    const whitspacesWidth = (columns - (title.length + 1)) / 2
+    const whitspacesWidth = (columns - title.length) / 2
     const [lhsWidth, rhsWidth] = Number.isInteger(whitspacesWidth)
       ? [whitspacesWidth, whitspacesWidth]
       : [whitspacesWidth - 1, whitspacesWidth + 1]
 
-    const borderLeft = ansi.red('─'.repeat(lhsWidth))
+    const borderLeft = ansi.red('─'.repeat(lhsWidth - 1))
     const borderRight = ansi.red('─'.repeat(rhsWidth))
     console.log(`${borderLeft}${ansi.bgRed().black(` ${title} `)}${borderRight}`)
   }
@@ -195,12 +197,9 @@ export class ErrorsPrinter {
     let index = 0
 
     for (let { phase, error, title } of errors) {
+      const label = phase === 'test' ? title : `${title}: ${this.#getPhaseTitle(phase)}`
       console.log()
-      console.log(
-        `  ${ansi.bgRed().black(' ERROR ')} ${
-          phase === 'test' ? title : `${title}: ${this.#getPhaseTitle(phase)}`
-        }`
-      )
+      console.log(`  ${pointer} ${ansi.underline(label)}`)
       await this.printError(error)
       this.printSectionBorder(`[${++index}/${errorsCount}]`)
     }
