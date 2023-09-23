@@ -140,9 +140,9 @@ await printer.printErrors([
 ])
 ```
 
-[github-actions-image]: https://img.shields.io/github/actions/workflow/status/japa/errors-printer/test.yml?style=for-the-badge
+[github-actions-image]: https://img.shields.io/github/actions/workflow/status/japa/errors-printer/checks.yml?style=for-the-badge
 
-[github-actions-url]: https://github.com/japa/errors-printer/actions/workflows/test.yml "github-actions"
+[github-actions-url]: https://github.com/japa/errors-printer/actions/workflows/checks.yml "github-actions"
 
 [npm-image]: https://img.shields.io/npm/v/@japa/errors-printer.svg?style=for-the-badge&logo=npm
 [npm-url]: https://npmjs.org/package/@japa/errors-printer "npm"
