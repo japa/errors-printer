@@ -39,7 +39,6 @@
   "devDependencies": {
     "@adonisjs/eslint-config": "^1.1.8",
     "@adonisjs/prettier-config": "^1.1.8",
-    "@adonisjs/require-ts": "^2.0.13",
     "@adonisjs/tsconfig": "^1.1.8",
     "@commitlint/cli": "^17.7.1",
     "@commitlint/config-conventional": "^17.7.0",
