@@ -5,9 +5,7 @@
   "main": "build/index.js",
   "type": "module",
   "files": [
-    "build/src",
-    "build/index.d.ts",
-    "build/index.js"
+    "build"
   ],
   "exports": {
     ".": "./build/index.js"
@@ -20,14 +18,15 @@
     "test": "echo 'no tests'",
     "clean": "del build",
     "typecheck": "tsc --noEmit",
-    "compile": "npm run lint && npm run clean && tsc",
+    "precompile": "npm run lint && npm run clean",
+    "compile": "tsup-node && tsc --emitDeclarationOnly --declaration",
     "build": "npm run compile",
     "release": "np",
     "version": "npm run build",
     "prepublishOnly": "npm run build",
     "lint": "eslint . --ext=.ts",
     "format": "prettier --write .",
-    "sync-labels": "github-label-sync --labels .github/labels.json japa/core"
+    "sync-labels": "github-label-sync --labels .github/labels.json japa/errors-printer"
   },
   "keywords": [
     "japa",
@@ -50,6 +49,7 @@
     "husky": "^8.0.3",
     "np": "^8.0.4",
     "prettier": "^3.0.3",
+    "tsup": "^7.2.0",
     "typescript": "^5.2.2"
   },
   "repository": {
@@ -84,5 +84,16 @@
     "extends": [
       "@commitlint/config-conventional"
     ]
+  },
+  "tsup": {
+    "entry": [
+      "./index.ts"
+    ],
+    "outDir": "./build",
+    "clean": true,
+    "format": "esm",
+    "dts": false,
+    "sourcemap": true,
+    "target": "esnext"
   }
 }
