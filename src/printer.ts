@@ -13,11 +13,12 @@ import forTerminal from 'youch-terminal'
 import Youch from 'youch'
 import { EOL } from 'node:os'
 import colors from '@poppinss/colors'
+import supportsColor from 'supports-color'
 import { diff as jestDiff } from 'jest-diff'
 
-const ansi = colors.ansi()
-const { columns } = process.stdout
+const ansi = supportsColor.stdout ? colors.ansi() : colors.silent()
 
+const { columns } = process.stdout
 const pointer = process.platform === 'win32' && !process.env.WT_SESSION ? '>' : '❯'
 
 /**
