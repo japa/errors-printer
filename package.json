@@ -4,7 +4,8 @@
   "description": "Error printer to pretty print Japa errors",
   "type": "module",
   "files": [
-    "build"
+    "build",
+    "!build/examples"
   ],
   "exports": {
     ".": "./build/index.js"
