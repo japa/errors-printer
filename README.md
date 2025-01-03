@@ -1,5 +1,5 @@
 # @japa/errors-printer
-> Print errors produced by the Japa tests runner
+> Error printer to pretty print Japa errors
 
 [![github-actions-image]][github-actions-url] [![npm-image]][npm-url] [![license-image]][license-url] [![typescript-image]][typescript-url]
 
@@ -8,9 +8,14 @@ Install the package from the npm registry as follows:
 
 ```sh
 npm i @japa/errors-printer
+```
 
-# yarn
+```sh
 yarn add @japa/errors-printer
+```
+
+```sh
+pnpm add @japa/errors-printer
 ```
 
 ## Usage
@@ -84,7 +89,7 @@ try {
 }
 ```
 
-![](assets/assertion-error.png)
+![](assets/assert-error.png)
 
 **Jest error**
 
@@ -101,7 +106,7 @@ try {
 }
 ```
 
-![](assets/jest-error.png)
+![](assets/expect-error.png)
 
 **Error stack**
 
@@ -112,7 +117,7 @@ const printer = new ErrorsPrinter()
 await printer.printError(new Error('boom'))
 ```
 
-![](assets/error-stack.png)
+![](assets/fatal-error.png)
 
 ### printErrors
 Print an array of errors produced by the Japa test runner summary. The method accepts an array of errors in the following format.
