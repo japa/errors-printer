@@ -11,6 +11,7 @@ import { Youch } from 'youch'
 import colors from '@poppinss/colors'
 import supportsColor from 'supports-color'
 import { diff as jestDiff } from 'jest-diff'
+import { ParsedError } from 'youch/types'
 
 const { columns } = process.stdout
 const ansi = supportsColor.stdout ? colors.ansi() : colors.silent()
@@ -47,6 +48,33 @@ export class ErrorsPrinter {
   }
 
   /**
+   * Parses the error stack using Youch
+   */
+  #parseErrorStack(error: any) {
+    return new Youch().toJSON(error, {
+      frameSourceBuffer: this.#options.stackLinesCount,
+    })
+  }
+
+  /**
+   * Parsers chai assertion error
+   */
+  async #parseAssertionError(error: any): Promise<ParsedError> {
+    const parsedError = await this.#parseErrorStack(error)
+    if (!('showDiff' in error) || error.showDiff) {
+      console.error()
+      const { actual, expected } = error
+      const diff = jestDiff(expected, actual, {
+        expand: true,
+        includeChangeCounts: true,
+      })
+      parsedError.message = `${parsedError.message}\n${diff}`
+    }
+
+    return parsedError
+  }
+
+  /**
    * Displays the error stack for a given error
    */
   async #displayErrorStack(error: any) {
@@ -77,13 +105,6 @@ export class ErrorsPrinter {
   }
 
   /**
-   * Display jest assertion error
-   */
-  async #displayJestError(error: any) {
-    await this.#displayErrorStack(error)
-  }
-
-  /**
    * Prints a section with heading and borders around it
    */
   printSectionBorder(paging: string) {
@@ -107,6 +128,32 @@ export class ErrorsPrinter {
   }
 
   /**
+   * Parses an error to JSON
+   */
+  async parseError(error: any): Promise<ParsedError | { message: string }> {
+    /**
+     * Values that are not object objects are not parsed
+     */
+    if (error === null || Array.isArray(error) || typeof error !== 'object') {
+      return {
+        message: String(error),
+      }
+    }
+
+    /**
+     * Assertion error
+     */
+    if ('actual' in error && 'expected' in error) {
+      return this.#parseAssertionError(error)
+    }
+
+    /**
+     * Parse all other errors using Youch
+     */
+    return this.#parseErrorStack(error)
+  }
+
+  /**
    * Pretty print the error to the console
    */
   async printError(error: any) {
@@ -127,15 +174,7 @@ export class ErrorsPrinter {
     }
 
     /**
-     * Jest error
-     */
-    if ('matcherResult' in error) {
-      await this.#displayJestError(error)
-      return
-    }
-
-    /**
-     * Fatal error
+     * Print all other errors using Youch
      */
     await this.#displayErrorStack(error)
   }

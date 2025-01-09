@@ -83,7 +83,7 @@ import { ErrorsPrinter } from '@japa/errors-printer'
 const printer = new ErrorsPrinter()
 
 try {
-  new Assert().deepEqual({ id: 1 }, { id: 2 })
+  assert.equal(2 + 2, 5)
 } catch (error) {
   await printer.printError(error)
 }
@@ -100,7 +100,7 @@ import { ErrorsPrinter } from '@japa/errors-printer'
 const printer = new ErrorsPrinter()
 
 try {
-  expect({ bar: 'baz' }).toEqual(expect.not.objectContaining({ bar: 'baz' }))
+  expect(2 + 2).toEqual(5)
 } catch (error) {
   await printer.printError(error)
 }
@@ -143,6 +143,91 @@ await printer.printErrors([
     error: new Error('teardown failed')
   }
 ])
+```
+
+### parseError
+Parses the error to JSON using Youch
+
+```ts
+import expect from 'expect'
+import { ErrorsPrinter } from '@japa/errors-printer'
+
+const printer = new ErrorsPrinter()
+
+try {
+  expect(2 + 2).toEqual(5)
+} catch (error) {
+  console.log(await printer.parseError(error))
+}
+```
+
+Output
+
+```ts
+{
+  message: '\x1B[2mexpect(\x1B[22m\x1B[31mreceived\x1B[39m\x1B[2m).\x1B[22mtoEqual\x1B[2m(\x1B[22m\x1B[32mexpected\x1B[39m\x1B[2m) // deep equality\x1B[22m\n' +
+    '\n' +
+    'Expected: \x1B[32m5\x1B[39m\n' +
+    'Received: \x1B[31m4\x1B[39m',
+  name: 'Error',
+  frames: [
+    {
+      functionName: '<anonymous>',
+      args: undefined,
+      fileName: '/Users/virk/code/japa/errors-printer/examples/expect.ts',
+      lineNumber: 14,
+      columnNumber: 17,
+      raw: '    at <anonymous> (/Users/virk/code/japa/errors-printer/examples/expect.ts:14:17)',
+      type: 'app',
+      fileType: 'fs',
+      source: [Array]
+    },
+    {
+      functionName: 'ModuleJob.run',
+      args: undefined,
+      fileName: 'node:internal/modules/esm/module_job',
+      lineNumber: 268,
+      columnNumber: 25,
+      raw: '    at ModuleJob.run (node:internal/modules/esm/module_job:268:25)',
+      type: 'native',
+      fileType: 'fs',
+      source: undefined
+    },
+    {
+      functionName: 'async onImport.tracePromise.__proto__',
+      args: undefined,
+      fileName: 'node:internal/modules/esm/loader',
+      lineNumber: 543,
+      columnNumber: 26,
+      raw: '    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:543:26)',
+      type: 'native',
+      fileType: 'fs',
+      source: undefined
+    },
+    {
+      functionName: 'async asyncRunEntryPointWithESMLoader',
+      args: undefined,
+      fileName: 'node:internal/modules/run_main',
+      lineNumber: 116,
+      columnNumber: 5,
+      raw: '    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:116:5)',
+      type: 'native',
+      fileType: 'fs',
+      source: undefined
+    }
+  ],
+  hint: undefined,
+  code: undefined,
+  cause: undefined,
+  stack: 'Error: \x1B[2mexpect(\x1B[22m\x1B[31mreceived\x1B[39m\x1B[2m).\x1B[22mtoEqual\x1B[2m(\x1B[22m\x1B[32mexpected\x1B[39m\x1B[2m) // deep equality\x1B[22m\n' +
+    '\n' +
+    'Expected: \x1B[32m5\x1B[39m\n' +
+    'Received: \x1B[31m4\x1B[39m\n' +
+    '    at <anonymous> (/Users/virk/code/japa/errors-printer/examples/expect.ts:14:17)\n' +
+    '    at ModuleJob.run (node:internal/modules/esm/module_job:268:25)\n' +
+    '    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:543:26)\n' +
+    '    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:116:5)'
+}
 ```
 
 [github-actions-image]: https://img.shields.io/github/actions/workflow/status/japa/errors-printer/checks.yml?style=for-the-badge

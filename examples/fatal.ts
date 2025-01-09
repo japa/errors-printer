@@ -10,3 +10,5 @@
 import { ErrorsPrinter } from '../src/printer.js'
 
 await new ErrorsPrinter({}).printError(new Error('Something went wrong'))
+console.log('PARSED')
+console.log(await new ErrorsPrinter({}).parseError(new Error('Something went wrong')))

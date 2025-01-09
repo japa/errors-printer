@@ -14,4 +14,6 @@ try {
   expect(2 + 2).toEqual(5)
 } catch (error) {
   await new ErrorsPrinter({}).printError(error)
+  console.log('PARSED')
+  console.log(await new ErrorsPrinter({}).parseError(error))
 }
