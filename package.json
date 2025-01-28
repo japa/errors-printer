@@ -46,13 +46,13 @@
     "release-it": "^18.1.2",
     "ts-node-maintained": "^10.9.5",
     "tsup": "^8.3.6",
-    "typescript": "^5.7.3",
-    "youch": "^4.1.0-beta.5"
+    "typescript": "^5.7.3"
   },
   "dependencies": {
     "@poppinss/colors": "^4.1.4",
     "jest-diff": "^29.7.0",
-    "supports-color": "^10.0.0"
+    "supports-color": "^10.0.0",
+    "youch": "^4.1.0-beta.5"
   },
   "homepage": "https://github.com/japa/errors-printer#readme",
   "repository": {
