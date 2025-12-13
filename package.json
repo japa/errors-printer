@@ -51,7 +51,7 @@
     "@poppinss/colors": "^4.1.6",
     "jest-diff": "^30.2.0",
     "supports-color": "^10.2.2",
-    "youch": "^4.1.0-beta.5"
+    "youch": "^4.1.0-beta.13"
   },
   "homepage": "https://github.com/japa/errors-printer#readme",
   "repository": {
